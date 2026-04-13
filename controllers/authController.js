@@ -76,10 +76,9 @@ const authController = {
 
             // set the token as a cookie
             res.cookie('token', token, {
-                httpOnly: true,
-                secure: NODE_ENV === 'production',
-                sameSite: NODE_ENV === 'production' ? 'none' : 'lax',
-                maxAge: 24 * 60 * 60 * 1000 // 24 hours
+               httpOnly: true,
+    secure: true,        // MUST be true on Render HTTPS
+    sameSite: 'none',  // 24 hours
             })
 
             return res.status(200).json({
