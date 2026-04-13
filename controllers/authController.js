@@ -91,11 +91,7 @@ const authController = {
                     role: user.role,
                 
                 }
-            });     await sendPushNotification(
-    "PASTE_TOKEN_HERE",
-    "🚨 Breaking News",
-    "Push notification working!"
-);
+            });    
         } catch (error) {
             res.status(500).json({ message: 'Error logging in', error: error.message });
         }
