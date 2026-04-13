@@ -1,0 +1,5 @@
+node_modules/
+package-lock.json
+.env
+logs/
+newsapp-95f89-firebase-adminsdk-fbsvc-26e0c2de56.json
