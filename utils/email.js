@@ -1,26 +1,20 @@
-const nodemailer = require('nodemailer');
-const { EMAIL_USER, GOOGLE_APP_PASSWORD } = require('../utils/config');
-console.log(EMAIL_USER)
-// create reusable transporter object using the default SMTP transport
-const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-        user: EMAIL_USER,
-        pass: GOOGLE_APP_PASSWORD
-    }
-});
+const { Resend } = require('resend');
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 const sendEmail = async (to, subject, text) => {
-    const mailOptions = {
-        from: EMAIL_USER,
-        to,
-        subject,
-        text,
-    }
+    try {
+        const data = await resend.emails.send({
+            from: 'ishaaqmeeran1@gmail.com',
+            to,
+            subject,
+            text
+        });
 
-    const info = await transporter.sendMail(mailOptions);
-    console.log('Email sent: ' + info.response);
-    
-}
+        console.log("✅ Email sent:", data);
+    } catch (error) {
+        console.log("❌ Email error:", error);
+    }
+};
 
 module.exports = sendEmail;
