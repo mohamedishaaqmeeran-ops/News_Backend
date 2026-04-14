@@ -72,8 +72,9 @@ const authController = {
             
             res.cookie('token', token, {
                httpOnly: true,
-    secure: true,        
-    sameSite: 'none',  
+               secure: true,        
+               sameSite: 'none',
+               path: '/',  
             })
 
             return res.status(200).json({
