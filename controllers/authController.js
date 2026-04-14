@@ -56,7 +56,7 @@ const authController = {
             error: error.message
         });
     }
-}
+},
     login: async (req, res) => {
         try {
             const { email, password } = req.body;
