@@ -24,7 +24,7 @@ const saveFCMToken = async (req, res) => {
 
 
 const authController = {
-   register: async (req, res) => {
+ register: async (req, res) => {
     try {
         const { name, email, password } = req.body;
 
@@ -40,15 +40,15 @@ const authController = {
 
         await newUser.save();
 
-        // ✅ Send response immediately
-        res.status(201).json({ message: 'User registered successfully' });
+        // ✅ FIX: email should NOT break registration
+        try {
+            await sendEmail(email, 'Welcome to our app', 'Thank you for registering!');
+        } catch (err) {
+            console.log("Email failed:", err.message);
+        }
 
-        // ✅ Send email in background
-        sendEmail(
-            email,
-            'Welcome to our app',
-            'Thank you for registering!'
-        ).catch(err => console.log("Email failed:", err.message));
+        // ✅ Always send success response
+        res.status(201).json({ message: 'User registered successfully' });
 
     } catch (error) {
         res.status(500).json({
@@ -56,7 +56,7 @@ const authController = {
             error: error.message
         });
     }
-},
+}
     login: async (req, res) => {
         try {
             const { email, password } = req.body;
