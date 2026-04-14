@@ -36,27 +36,40 @@ register: async (req, res) => {
 
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        const newUser = new User({ name, email, password: hashedPassword });
+        const newUser = new User({
+            name,
+            email,
+            password: hashedPassword
+        });
 
         await newUser.save();
 
-        // ✅ Send response immediately
-        res.status(201).json({ message: 'User registered successfully' });
+        // ✅ FIX: email should NOT break registration
+        try {
+            await sendEmail(
+                email,
+                'Welcome to our app',
+                'Thank you for registering!'
+            );
+        } catch (emailError) {
+            console.log("❌ Email failed:", emailError.message);
+        }
 
-        // ✅ Send email in background
-        sendEmail(
-            email,
-            'Welcome to our app',
-            'Thank you for registering!'
-        ).catch(err => console.log("Email failed:", err.message));
+        // ✅ ALWAYS send success response
+        return res.status(201).json({
+            success: true,
+            message: 'User registered successfully'
+        });
 
     } catch (error) {
-        res.status(500).json({
-            message: 'Error registering user',
-            error: error.message
+        console.log("❌ Register error:", error);
+
+        return res.status(500).json({
+            success: false,
+            message: 'Error registering user'
         });
     }
-},
+}
     login: async (req, res) => {
         try {
             const { email, password } = req.body;
