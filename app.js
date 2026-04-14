@@ -26,14 +26,7 @@ app.use(logger);
 app.use("/api/v1/notifications", notificationRoutes);
 app.use("/api/v1/test", testRoutes);
 app.use('/api/v1/auth', authRouter);
-app.get('/test-email', async (req, res) => {
-    try {
-        await sendEmail("yourmail@gmail.com", "Test", "Hello");
-        res.send("Email sent");
-    } catch (err) {
-        res.send("Email failed: " + err.message);
-    }
-});
+
 app.use('/api/v1/channels', channelRouter);
 app.use('/api/v1/news', newRouter);
 
