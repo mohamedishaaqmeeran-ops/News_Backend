@@ -24,31 +24,39 @@ const saveFCMToken = async (req, res) => {
 
 
 const authController = {
-    register: async (req, res) => {
-        try {
-        
-            const { name, email, password } = req.body;
-          
-            const existingUser = await User.findOne({ email });
+   register: async (req, res) => {
+    try {
+        const { name, email, password } = req.body;
 
-            if (existingUser) {
-                return res.status(400).json({ message: 'User already exists' });
-            }
+        const existingUser = await User.findOne({ email });
 
-           
-            const hashedPassword = await bcrypt.hash(password, 10);
-
-            const newUser = new User({ name, email, password: hashedPassword });
-
-            await newUser.save();
-
-             await sendEmail(email, 'Welcome to our app', 'Thank you for registering!');
-
-            res.status(201).json({ message: 'User registered successfully' });
-        } catch (error) {
-            res.status(500).json({ message: 'Error registering user', error: error.message });
+        if (existingUser) {
+            return res.status(400).json({ message: 'User already exists' });
         }
-    },
+
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        const newUser = new User({ name, email, password: hashedPassword });
+
+        await newUser.save();
+
+        // ✅ Send response immediately
+        res.status(201).json({ message: 'User registered successfully' });
+
+        // ✅ Send email in background
+        sendEmail(
+            email,
+            'Welcome to our app',
+            'Thank you for registering!'
+        ).catch(err => console.log("Email failed:", err.message));
+
+    } catch (error) {
+        res.status(500).json({
+            message: 'Error registering user',
+            error: error.message
+        });
+    }
+},
     login: async (req, res) => {
         try {
             const { email, password } = req.body;
