@@ -3,28 +3,31 @@ const { JWT_SECRET } = require('../utils/config');
 const User = require('../models/user');
 
 const isAuthenticated = async (req, res, next) => {
-    
-    const token = req.cookies && req.cookies.token;
 
-    
+    let token;
+
+    // ✅ First check Authorization header
+    if (req.headers.authorization && req.headers.authorization.startsWith("Bearer")) {
+        token = req.headers.authorization.split(" ")[1];
+    }
+
+    // ✅ Fallback to cookie (optional)
+    if (!token && req.cookies?.token) {
+        token = req.cookies.token;
+    }
+
     if (!token) {
         return res.status(401).json({ message: 'Unauthorized' });
     }
 
     try {
-        
-        const decoded = await jwt.verify(token, JWT_SECRET);
-
-      
+        const decoded = jwt.verify(token, JWT_SECRET);
         req.userId = decoded.userId;
-
-        
         next();
     } catch (error) {
-       
         res.status(401).json({ message: 'Unauthorized', error: error.message });
     }
-}
+};
 
 const allowRoles = (roles) => {
     return async (req, res, next) => {
