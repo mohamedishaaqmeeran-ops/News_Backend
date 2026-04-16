@@ -79,6 +79,8 @@ register: async (req, res) => {
                httpOnly: true,
                secure: true,        
                sameSite: 'none',
+               maxAge: 3 * 60 * 60 * 1000,
+               path: '/' 
              
             })
 

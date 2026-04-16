@@ -10,7 +10,7 @@ const channelRouter = require('./routes/channelRoute');
 const notificationRoutes = require("./routes/notificationRoutes");
 const app = express();
 
-
+app.set('trust proxy', 1);
 app.use(cors({
     origin: 'https://ancnews.netlify.app',
     credentials: true
